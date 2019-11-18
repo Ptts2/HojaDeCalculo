@@ -59,8 +59,18 @@ public class HojaDeCalculo{
 
         //Leo las filas
 
-        //...
+        for(int i = 0; i<hoja.getNFil(); i++){
+            String linea = sc.nextLine();
+            String [] columnas = linea.split(" ");
 
+            if(columnas.length != hoja.getNCol()){
+                System.out.println("Error al introducir fila en la hoja de calculo");
+                System.exit(-1);
+            }
+
+            hoja.setFila(i, columnas);
+        }
+        hoja.calcular();
         //Añado la hoja a la lista
 
         lista.add(hoja);
@@ -70,17 +80,42 @@ public class HojaDeCalculo{
 
 class Hoja{
 
-    /*Atributos de la hoja de cálculo*/
+    //Array que contiene el abecedario
+    final char[] abecedario = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 
+    /*Atributos de la hoja de cálculo*/
     private int[][] hoja;
+    private String[][] hojaRef;
     private int nFil;
     private int nCol;
 
+    /**
+     * Constructor de la clase
+     * @param nFil Numero de filas
+     * @param nCol Numero de columnas
+     */
     public Hoja(int nFil, int nCol){
         this.nFil = nFil;
         this.nCol = nCol;
-        hoja = new int[nFil][nCol];
+        this.hoja = new int[nFil][nCol];
+        this.hojaRef = new String[nFil][nCol];
         inicializar();
+    }
+
+    /**
+     * Getter del numero de filas
+     * @return numero de filas
+     */
+    public int getNFil(){
+        return this.nFil;
+    }
+
+    /**
+     * Getter del numero de columnas
+     * @return numero de columnas
+     */
+    public int getNCol(){
+        return this.nCol;
     }
 
     /**
@@ -89,9 +124,35 @@ class Hoja{
      * @param fila Fila de la casilla
      * @param col Columna de la casilla
      */
-    public setCasilla(int valor, int fila, int col){
+    public void setCasilla(int valor, int fila, int col){
 
         this.hoja[fila][col] = valor;
+    }
+
+    /**
+     * Llega cualquier string que empiece por "=", si la fórmula esta mal sale del programa
+     * @param formula formula a leer
+     * @return solucion de la formula, si la tiene
+     */
+    public int resolverFormula(String formula){
+        //...
+
+        return 0;
+    }
+
+    /**
+     * Añade las filas a la hoja de calculo de referencias
+     * Se supone que el numero de fila es correcto 
+     * y que el string de la fila tiene el mismo numero de elementos que
+     * numero de columnas
+     * @param fil numero de fila
+     * @param fila contenido de la fila
+     */
+    public void setFila(int fil, String[] fila){
+        
+        for(int i = 0; i<this.nCol; i++){
+            this.hojaRef[fil][i] = fila[i];
+        }
     }
 
     /**
@@ -102,6 +163,35 @@ class Hoja{
         for(int i = 0; i<this.nFil; i++){
             for(int j = 0; j<this.nCol; j++){
                 this.hoja[i][j] = 0;
+            }
+        }
+    }
+
+    /**
+     * Hace los calculos correspondientes a la hoja de calculo cuando
+     * la matriz de referencias esta completa
+     */
+    public void calcular(){
+
+        for(int i = 0; i<this.nFil; i++){
+            for(int j = 0; j<this.nCol; j++){
+
+                //Si es formula
+                if(this.hojaRef[i][j].charAt(0) == '=') {
+
+                    this.hoja[i][j] = this.resolverFormula(this.hojaRef[i][j]);
+
+                }else{
+                    
+                    try{
+                        this.hoja[i][j] = Integer.parseInt(this.hojaRef[i][j]);
+
+                    }catch(Exception e){
+                        System.out.println("Entrada de hoja de calculo incorrecta");
+                        System.exit(-1);
+                    }
+                }
+                
             }
         }
     }
