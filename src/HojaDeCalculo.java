@@ -38,10 +38,10 @@ public class HojaDeCalculo{
         Hoja hoja;
         String[] filYCol = (sc.nextLine().split(" "));
 
-        //Leo el numero de filas y de columnas
+        //Leo el numero de columnas y de filas
         try{
-            nFil = Integer.parseInt(filYCol[0]);
-            nCol = Integer.parseInt(filYCol[1]);
+            nCol = Integer.parseInt(filYCol[0]);
+            nFil = Integer.parseInt(filYCol[1]);
 
             //compruebo que el numero de filas y columnas sea positivo
             if(nFil<1 || nCol<1){
@@ -64,7 +64,7 @@ public class HojaDeCalculo{
             String [] columnas = linea.split(" ");
 
             if(columnas.length != hoja.getNCol()){
-                System.out.println("Error al introducir fila en la hoja de calculo");
+                System.out.println("Error al introducir fila en la hoja de calculo.");
                 System.exit(-1);
             }
 
@@ -81,7 +81,7 @@ public class HojaDeCalculo{
 class Hoja{
 
     //Array que contiene el abecedario
-    final char[] abecedario = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+    final String abecedario = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     /*Atributos de la hoja de cálculo*/
     private int[][] hoja;
@@ -135,11 +135,78 @@ class Hoja{
      * @return solucion de la formula, si la tiene
      */
     public int resolverFormula(String formula){
-        //...
+        int valor = 0;
+        ArrayList<int[]> casillas = new ArrayList<int[]>();
+        //Suma
 
-        return 0;
+        String[] factores = formula.substring(1).split("\\+");
+
+        for(int i = 0; i<factores.length;i++){
+            casillas.add(descifrarCasilla(factores[i]));
+        }
+
+        try{
+            for(int i = 0; i<factores.length;i++){
+                valor = valor + this.hoja[casillas.get(i)[0]][casillas.get(i)[1]];
+            }
+        }catch(Exception e){
+            System.out.println("Error de formula.");
+            System.exit(-1);
+        }
+        return valor;
     }
 
+    public int[] descifrarCasilla(String casilla){
+
+        int[] casillas = new int[2];
+        int iFil=0, iCol = 0, i=0;
+        boolean buscando = true;
+        String filas;
+
+        do{
+
+            if( !( abecedario.contains(String.valueOf(casilla.charAt(i))) ) ){
+
+                if(i == 0){
+                    System.out.println("Error de formula.");
+                    System.exit(-1);
+                }
+                iCol= i;
+                buscando = false;
+            }
+            
+        }while(buscando && i<casilla.length());
+
+        try{
+            casillas[1]=Integer.parseInt(casilla.substring(iCol)) -1 ;
+        }catch(Exception e){
+            System.out.println("Error de formula.");
+            System.exit(-1);
+        }
+
+        //Calcular las filas
+        filas = casilla.substring(0, iCol);
+        
+        try{
+            for(i = 0; i < filas.length(); i++){
+                int indice = abecedario.indexOf(filas.charAt(i));
+                
+                if(indice < 0){
+                    System.out.println("Error de formula.");
+                    System.exit(-1);
+                }
+                //para calcular el valor en base 26 ValorDec * sistemadenum ^ indice
+
+                  iFil = iFil + ( indice * ( (int) ( Math.pow(26.0, (double)( (filas.length()-1)-i) ))) );
+            }
+        }catch(Exception e){
+            System.out.println("Error de formula.");
+            System.exit(-1);
+        }
+
+        casillas[0] = iFil;
+        return casillas;
+    }
     /**
      * Añade las filas a la hoja de calculo de referencias
      * Se supone que el numero de fila es correcto 
@@ -176,9 +243,10 @@ class Hoja{
         for(int i = 0; i<this.nFil; i++){
             for(int j = 0; j<this.nCol; j++){
 
-                //Si es formula
+                //Si es formula la añado a una lista para hacerlo cuando todos los valores de las demas casillas esten puestos
                 if(this.hojaRef[i][j].charAt(0) == '=') {
 
+                    //do that 
                     this.hoja[i][j] = this.resolverFormula(this.hojaRef[i][j]);
 
                 }else{
@@ -187,7 +255,7 @@ class Hoja{
                         this.hoja[i][j] = Integer.parseInt(this.hojaRef[i][j]);
 
                     }catch(Exception e){
-                        System.out.println("Entrada de hoja de calculo incorrecta");
+                        System.out.println("Entrada de hoja de calculo incorrecta.");
                         System.exit(-1);
                     }
                 }
