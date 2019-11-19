@@ -144,14 +144,15 @@ class Hoja{
         for(int i = 0; i<factores.length;i++){
             casillas.add(descifrarCasilla(factores[i]));
         }
-
+        
         try{
             for(int i = 0; i<factores.length;i++){
                 valor = valor + this.hoja[casillas.get(i)[0]][casillas.get(i)[1]];
             }
+            
         }catch(Exception e){
-            System.out.println("Error de formula.");
-            System.exit(-1);
+           System.out.println("Error de formula, fuera de los limites de la hoja.");
+           System.exit(-1);
         }
         return valor;
     }
@@ -161,50 +162,50 @@ class Hoja{
         int[] casillas = new int[2];
         int iFil=0, iCol = 0, i=0;
         boolean buscando = true;
-        String filas;
+        String columnas;
 
         do{
 
             if( !( abecedario.contains(String.valueOf(casilla.charAt(i))) ) ){
 
                 if(i == 0){
-                    System.out.println("Error de formula.");
+                    System.out.println("Error de formula, la formula debe estar compuesta unicamente por celdas.");
                     System.exit(-1);
                 }
-                iCol= i;
+                iFil= i;
                 buscando = false;
             }
-            
+            i++;
         }while(buscando && i<casilla.length());
 
         try{
-            casillas[1]=Integer.parseInt(casilla.substring(iCol)) -1 ;
+            casillas[0]=Integer.parseInt(casilla.substring(iFil)) -1;
         }catch(Exception e){
-            System.out.println("Error de formula.");
+            System.out.println("Error de formula, los valores han de ser numéricos y enteros");
             System.exit(-1);
         }
 
-        //Calcular las filas
-        filas = casilla.substring(0, iCol);
+        //Calcular las columnas
+        columnas = casilla.substring(0, iFil);
         
         try{
-            for(i = 0; i < filas.length(); i++){
-                int indice = abecedario.indexOf(filas.charAt(i));
+            for(i = 0; i < columnas.length(); i++){
+                int indice = abecedario.indexOf(columnas.charAt(i));
                 
                 if(indice < 0){
-                    System.out.println("Error de formula.");
+                    System.out.println("Error de formula, caracter no reconocido.");
                     System.exit(-1);
                 }
                 //para calcular el valor en base 26 ValorDec * sistemadenum ^ indice
 
-                  iFil = iFil + ( indice * ( (int) ( Math.pow(26.0, (double)( (filas.length()-1)-i) ))) );
+                  iCol = iCol + ( indice * ( (int) ( Math.pow(26.0, (double)( (columnas.length()-1)-i) ))) );
             }
         }catch(Exception e){
             System.out.println("Error de formula.");
             System.exit(-1);
         }
 
-        casillas[0] = iFil;
+        casillas[1] = iCol;
         return casillas;
     }
     /**
@@ -246,7 +247,7 @@ class Hoja{
                 //Si es formula la añado a una lista para hacerlo cuando todos los valores de las demas casillas esten puestos
                 if(this.hojaRef[i][j].charAt(0) == '=') {
 
-                    //do that 
+                    //do that ^
                     this.hoja[i][j] = this.resolverFormula(this.hojaRef[i][j]);
 
                 }else{
