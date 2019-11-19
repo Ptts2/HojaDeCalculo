@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class HojaDeCalculo{
+public class HojaDeCalculo {
 
     public static void main(final String[] args) {
 
@@ -8,62 +8,67 @@ public class HojaDeCalculo{
         Scanner sc = new Scanner(System.in);
         ArrayList<Hoja> listaDeHojas = new ArrayList<Hoja>();
 
-        //Leer número de hojas de cálculo
-        try{
+        // Leer número de hojas de cálculo
+        try {
             nHojas = Integer.parseInt(sc.nextLine());
-            
-            //El numero de hojas debe ser al menos 1
-            if(nHojas<1){
+
+            // El numero de hojas debe ser al menos 1
+            if (nHojas < 1) {
                 System.out.println("El numero de hojas debe ser positivo mayor que 0.");
                 System.exit(-1);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("El numero de hojas debe ser un entero.");
             System.exit(-1);
         }
 
-        //Leeo las hojas
-        for(int i = 0; i<nHojas; i++){
+        // Leeo las hojas
+        for (int i = 0; i < nHojas; i++) {
             leerHojas(sc, listaDeHojas);
         }
 
-        //Imprimo las hojas
-       for(int i = 0; i<nHojas; i++){
-           System.out.println(listaDeHojas.get(i).toString());
-       }
+        // Imprimo las hojas
+        for (int i = 0; i < nHojas; i++) {
+            System.out.println(listaDeHojas.get(i).toString());
+        }
     }
 
-    public static void leerHojas(Scanner sc, ArrayList<Hoja> lista){
-        int nFil=0, nCol=0;
+    /**
+     * Metodo que lee una hoja de calculo y la resuelve
+     * @param sc Scannel
+     * @param lista Lista donde se almacenan las distintas hojas de calculo
+     */
+    public static void leerHojas(Scanner sc, ArrayList<Hoja> lista) {
+        int nFil = 0, nCol = 0;
         Hoja hoja;
         String[] filYCol = (sc.nextLine().split(" "));
 
-        //Leo el numero de columnas y de filas
-        try{
+        // Leo el numero de columnas y de filas
+        try {
             nCol = Integer.parseInt(filYCol[0]);
             nFil = Integer.parseInt(filYCol[1]);
 
-            //compruebo que el numero de filas y columnas sea positivo
-            if(nFil<1 || nCol<1){
+            // compruebo que el numero de filas y columnas sea positivo
+            if (nFil < 1 || nCol < 1) {
                 System.out.println("El numero de filas y columnas debe ser positivo mayor que 0.");
                 System.exit(-1);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("El numero de filas y columnas debe ser un entero.");
             System.exit(-1);
         }
 
-        //Creo la hoja
+        // Creo la hoja
 
         hoja = new Hoja(nFil, nCol);
 
-        //Leo las filas
+        // Leo las filas
 
-        for(int i = 0; i<hoja.getNFil(); i++){
+        for (int i = 0; i < hoja.getNFil(); i++) {
             String linea = sc.nextLine();
-            String [] columnas = linea.split(" ");
+            String[] columnas = linea.split(" ");
 
-            if(columnas.length != hoja.getNCol()){
+            if (columnas.length != hoja.getNCol()) {
                 System.out.println("Error al introducir fila en la hoja de calculo.");
                 System.exit(-1);
             }
@@ -71,19 +76,19 @@ public class HojaDeCalculo{
             hoja.setFila(i, columnas);
         }
         hoja.calcular();
-        //Añado la hoja a la lista
 
+        // Añado la hoja a la lista
         lista.add(hoja);
 
     }
 }
 
-class Hoja{
+class Hoja {
 
-    //Array que contiene el abecedario
+    // Array que contiene el abecedario
     final String abecedario = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    /*Atributos de la hoja de cálculo*/
+    /* Atributos de la hoja de cálculo */
     private int[][] hoja;
     private String[][] hojaRef;
     private int nFil;
@@ -91,10 +96,11 @@ class Hoja{
 
     /**
      * Constructor de la clase
+     * 
      * @param nFil Numero de filas
      * @param nCol Numero de columnas
      */
-    public Hoja(int nFil, int nCol){
+    public Hoja(int nFil, int nCol) {
         this.nFil = nFil;
         this.nCol = nCol;
         this.hoja = new int[nFil][nCol];
@@ -104,103 +110,115 @@ class Hoja{
 
     /**
      * Getter del numero de filas
+     * 
      * @return numero de filas
      */
-    public int getNFil(){
+    public int getNFil() {
         return this.nFil;
     }
 
     /**
      * Getter del numero de columnas
+     * 
      * @return numero de columnas
      */
-    public int getNCol(){
+    public int getNCol() {
         return this.nCol;
     }
 
     /**
      * Cambia el valor a una casilla, el valor que llega siempre es correcto
+     * 
      * @param valor Valor de la casilla
-     * @param fila Fila de la casilla
-     * @param col Columna de la casilla
+     * @param fila  Fila de la casilla
+     * @param col   Columna de la casilla
      */
-    public void setCasilla(int valor, int fila, int col){
+    public void setCasilla(int valor, int fila, int col) {
 
         this.hoja[fila][col] = valor;
     }
 
     /**
-     * Llega cualquier string que empiece por "=", si la fórmula esta mal sale del programa
+     * Llega cualquier string que empiece por "=", si la fórmula esta mal sale del
+     * programa
+     * 
      * @param formula formula a leer
      * @return solucion de la formula, si la tiene
      */
-    public int resolverFormula(String formula){
+    public int resolverFormula(String formula) {
         int valor = 0;
         ArrayList<int[]> casillas = new ArrayList<int[]>();
-        //Suma
+        // Suma
 
         String[] factores = formula.substring(1).split("\\+");
 
-        for(int i = 0; i<factores.length;i++){
+        for (int i = 0; i < factores.length; i++) {
             casillas.add(descifrarCasilla(factores[i]));
         }
-        
-        try{
-            for(int i = 0; i<factores.length;i++){
+
+        try {
+            for (int i = 0; i < factores.length; i++) {
                 valor = valor + this.hoja[casillas.get(i)[0]][casillas.get(i)[1]];
             }
-            
-        }catch(Exception e){
-           System.out.println("Error de formula, fuera de los limites de la hoja.");
-           System.exit(-1);
+
+        } catch (Exception e) {
+            System.out.println("Error de formula, fuera de los limites de la hoja.");
+            System.exit(-1);
         }
         return valor;
     }
 
-    public int[] descifrarCasilla(String casilla){
+    /**
+     * Metodo para calcular las coordenadas de una casilla en formato de celda de
+     * hoja de calculo
+     * 
+     * @param casilla Formato de celda de la hoja
+     * @return coordenadas numericas en formato [Fila][Columna]
+     */
+    public int[] descifrarCasilla(String casilla) {
 
         int[] casillas = new int[2];
-        int iFil=0, iCol = 0, i=0;
+        int iFil = 0, iCol = 0, i = 0;
         boolean buscando = true;
         String columnas;
 
-        do{
+        do {
 
-            if( !( abecedario.contains(String.valueOf(casilla.charAt(i))) ) ){
+            if (!(abecedario.contains(String.valueOf(casilla.charAt(i))))) {
 
-                if(i == 0){
+                if (i == 0) {
                     System.out.println("Error de formula, la formula debe estar compuesta unicamente por celdas.");
                     System.exit(-1);
                 }
-                iFil= i;
+                iFil = i;
                 buscando = false;
             }
             i++;
-        }while(buscando && i<casilla.length());
+        } while (buscando && i < casilla.length());
 
-        try{
-            casillas[0]=Integer.parseInt(casilla.substring(iFil)) -1;
-        }catch(Exception e){
+        try {
+            casillas[0] = Integer.parseInt(casilla.substring(iFil)) - 1;
+        } catch (Exception e) {
             System.out.println("Error de formula, los valores han de ser numéricos y enteros");
             System.exit(-1);
         }
 
-        //Calcular las columnas
+        // Calcular las columnas
         columnas = casilla.substring(0, iFil);
-        
-        try{
-            for(i = 0; i < columnas.length(); i++){
+
+        try {
+            for (i = 0; i < columnas.length(); i++) {
                 int indice = abecedario.indexOf(columnas.charAt(i));
-                
-                if(indice < 0){
+
+                if (indice < 0) {
                     System.out.println("Error de formula, caracter no reconocido.");
                     System.exit(-1);
                 }
-                //para calcular el valor en base 26 ValorDec * sistemadenum ^ indice
+                // para calcular el valor en base 26 ValorDec * sistemadenum ^ indice
 
-                  iCol = iCol + ( indice * ( (int) ( Math.pow(26.0, (double)( (columnas.length()-1)-i) ))) );
+                iCol = iCol + (indice * ((int) (Math.pow(26.0, (double) ((columnas.length() - 1) - i)))));
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Error de formula.");
             System.exit(-1);
         }
@@ -208,17 +226,18 @@ class Hoja{
         casillas[1] = iCol;
         return casillas;
     }
+
     /**
-     * Añade las filas a la hoja de calculo de referencias
-     * Se supone que el numero de fila es correcto 
-     * y que el string de la fila tiene el mismo numero de elementos que
-     * numero de columnas
-     * @param fil numero de fila
+     * Añade las filas a la hoja de calculo de referencias Se supone que el numero
+     * de fila es correcto y que el string de la fila tiene el mismo numero de
+     * elementos que numero de columnas
+     * 
+     * @param fil  numero de fila
      * @param fila contenido de la fila
      */
-    public void setFila(int fil, String[] fila){
-        
-        for(int i = 0; i<this.nCol; i++){
+    public void setFila(int fil, String[] fila) {
+
+        for (int i = 0; i < this.nCol; i++) {
             this.hojaRef[fil][i] = fila[i];
         }
     }
@@ -226,62 +245,63 @@ class Hoja{
     /**
      * Inicializa la hoja a cero
      */
-    private void inicializar(){
+    private void inicializar() {
 
-        for(int i = 0; i<this.nFil; i++){
-            for(int j = 0; j<this.nCol; j++){
+        for (int i = 0; i < this.nFil; i++) {
+            for (int j = 0; j < this.nCol; j++) {
                 this.hoja[i][j] = 0;
             }
         }
     }
 
     /**
-     * Hace los calculos correspondientes a la hoja de calculo cuando
-     * la matriz de referencias esta completa
+     * Hace los calculos correspondientes a la hoja de calculo cuando la matriz de
+     * referencias esta completa
      */
-    public void calcular(){
+    public void calcular() {
 
-        for(int i = 0; i<this.nFil; i++){
-            for(int j = 0; j<this.nCol; j++){
+        for (int i = 0; i < this.nFil; i++) {
+            for (int j = 0; j < this.nCol; j++) {
 
-                //Si es formula la añado a una lista para hacerlo cuando todos los valores de las demas casillas esten puestos
-                if(this.hojaRef[i][j].charAt(0) == '=') {
+                // Si es formula la añado a una lista para hacerlo cuando todos los valores de
+                // las demas casillas esten puestos
+                if (this.hojaRef[i][j].charAt(0) == '=') {
 
-                    //do that ^
+                    // do that ^
                     this.hoja[i][j] = this.resolverFormula(this.hojaRef[i][j]);
 
-                }else{
-                    
-                    try{
+                } else {
+
+                    try {
                         this.hoja[i][j] = Integer.parseInt(this.hojaRef[i][j]);
 
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         System.out.println("Entrada de hoja de calculo incorrecta.");
                         System.exit(-1);
                     }
                 }
-                
+
             }
         }
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder salida = new StringBuilder();
 
-        for(int i = 0; i<this.nFil; i++){
-            for(int j = 0; j<this.nCol; j++){
+        for (int i = 0; i < this.nFil; i++) {
+            for (int j = 0; j < this.nCol; j++) {
                 salida.append(this.hoja[i][j]);
 
-                if(j != this.nCol-1){
+                if (j != this.nCol - 1) {
                     salida.append(" ");
                 }
             }
-            if(i != nFil-1){
+            if (i != nFil - 1) {
                 salida.append(System.lineSeparator());
             }
         }
-        
+
         return salida.toString();
     }
 }
