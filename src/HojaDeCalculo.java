@@ -159,6 +159,10 @@ class Hoja {
         try {
             for (int i = 0; i < factores.length; i++) {
                 valor = valor + this.hoja[casillas.get(i)[0]][casillas.get(i)[1]];
+
+                if(this.hoja[casillas.get(i)[0]][casillas.get(i)[1]] == Integer.MIN_VALUE){
+                    return Integer.MIN_VALUE;
+                }
             }
 
         } catch (Exception e) {
@@ -249,7 +253,7 @@ class Hoja {
 
         for (int i = 0; i < this.nFil; i++) {
             for (int j = 0; j < this.nCol; j++) {
-                this.hoja[i][j] = 0;
+                this.hoja[i][j] = Integer.MIN_VALUE;
             }
         }
     }
@@ -260,6 +264,7 @@ class Hoja {
      */
     public void calcular() {
 
+        ArrayList <Formula> formulas = new ArrayList<Formula>();
         for (int i = 0; i < this.nFil; i++) {
             for (int j = 0; j < this.nCol; j++) {
 
@@ -267,8 +272,7 @@ class Hoja {
                 // las demas casillas esten puestos
                 if (this.hojaRef[i][j].charAt(0) == '=') {
 
-                    // do that ^
-                    this.hoja[i][j] = this.resolverFormula(this.hojaRef[i][j]);
+                    formulas.add(new Formula(this.hojaRef[i][j], i, j));
 
                 } else {
 
@@ -283,6 +287,32 @@ class Hoja {
 
             }
         }
+
+        //Ahora resuelvo las formulas, solo las resuelvo cuando todas las casillas que afectan a la formula tienen un valor asignado
+        boolean resolviendo = true;
+        int cont = 0, errores = 0;
+        
+        while(resolviendo){
+            int valor = resolverFormula(formulas.get(cont).getFormula());;
+             
+            if(valor == Integer.MIN_VALUE){
+                cont++;
+                errores++;
+                if( (errores >= 2 && formulas.size() == 2) || cont>=formulas.size()){
+                    System.out.println("Error de formula, dependencias entre formulas");
+                    System.exit(-1);
+                }
+            }else{
+                this.hoja[formulas.get(cont).getFil()][formulas.get(cont).getCol()] = valor;
+                formulas.remove(cont);
+                cont = 0;
+                errores = 0;
+                if(formulas.isEmpty())
+                    resolviendo = false;
+            }
+
+        }
+
     }
 
     @Override
@@ -304,4 +334,45 @@ class Hoja {
 
         return salida.toString();
     }
+}
+
+class Formula{
+
+    /* Atributos de la hoja de cálculo */
+    private String formula;
+    private int filFormula;
+    private int colFormula;
+
+
+    public Formula(String formula, int fil, int col){
+        this.formula = formula;
+        this.filFormula = fil;
+        this.colFormula = col;
+    }
+
+    /**
+     * Devuelve la formula como string
+     * @return formula como string
+     */
+    public String getFormula(){
+        return this.formula;
+    }
+
+    /**
+     * Devuelve la fila a la que pertenece la formula
+     * @return fila de la formula
+     */
+    public int getFil(){
+        return this.filFormula;
+    }
+
+     /**
+     * Devuelve la columna a la que pertenece la formula
+     * @return columna de la formula
+     */
+    public int getCol(){
+        return this.colFormula;
+    }
+
+
 }
