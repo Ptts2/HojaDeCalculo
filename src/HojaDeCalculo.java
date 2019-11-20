@@ -31,6 +31,8 @@ public class HojaDeCalculo {
         for (int i = 0; i < nHojas; i++) {
             System.out.println(listaDeHojas.get(i).toString());
         }
+
+        sc.close();
     }
 
     /**
@@ -81,6 +83,7 @@ public class HojaDeCalculo {
         lista.add(hoja);
 
     }
+    
 }
 
 class Hoja {
