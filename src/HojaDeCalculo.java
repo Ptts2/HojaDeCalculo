@@ -343,7 +343,12 @@ class Formula{
     private int filFormula;
     private int colFormula;
 
-
+    /**
+     * Constructor de la clase formula
+     * @param formula String que contiene las casillas de la formula y los operadores
+     * @param fil Fila a la que pertenece la formula
+     * @param col Columna a la que pertenece la formula
+     */
     public Formula(String formula, int fil, int col){
         this.formula = formula;
         this.filFormula = fil;
