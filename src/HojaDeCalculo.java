@@ -215,7 +215,7 @@ class Hoja {
 
         try {
             for (i = 0; i < columnas.length(); i++) {
-                int indice = abecedario.indexOf(columnas.charAt(i));
+                int indice = (abecedario.indexOf(columnas.charAt(i)) + 1);
 
                 if (indice < 0) {
                     System.out.println("Error de formula, caracter no reconocido.");
@@ -225,6 +225,7 @@ class Hoja {
 
                 iCol = iCol + (indice * ((int) (Math.pow(26.0, (double) ((columnas.length() - 1) - i)))));
             }
+            iCol--;
         } catch (Exception e) {
             System.out.println("Error de formula.");
             System.exit(-1);
