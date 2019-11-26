@@ -50,13 +50,14 @@ public class HojaDeCalculo {
             nCol = Integer.parseInt(filYCol[0]);
             nFil = Integer.parseInt(filYCol[1]);
 
-            // compruebo que el numero de filas y columnas sea positivo
-            if (nFil < 1 || nCol < 1) {
-                System.out.println("El numero de filas y columnas debe ser positivo mayor que 0.");
-                System.exit(-1);
-            }
         } catch (Exception e) {
             System.out.println("El numero de filas y columnas debe ser un entero.");
+            System.exit(-1);
+        }
+
+        //Compruebo que el numero de filas y columnas sea positivo y que cumpla los requisitos
+        if ( (nFil < 1 || nFil >999) || (nCol < 1 || nCol >18278)) {
+            System.out.println("El numero de filas y columnas debe ser positivo mayor que 0 y max filas 999, max columnas 18278.");
             System.exit(-1);
         }
 
