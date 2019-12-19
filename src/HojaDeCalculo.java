@@ -273,7 +273,7 @@ class Hoja {
         for (int i = 0; i < this.nFil; i++) {
             for (int j = 0; j < this.nCol; j++) {
 
-                // Si es formula la añado a una lista para hacerlo cuando todos los valores de
+                // Si es formula la añado a una lista para hacerlo cuando todos los valores de-
                 // las demas casillas esten puestos
                 if (this.hojaRef[i][j].charAt(0) == '=') {
 
@@ -294,11 +294,15 @@ class Hoja {
         }
 
         //Ahora resuelvo las formulas, solo las resuelvo cuando todas las casillas que afectan a la formula tienen un valor asignado
+        
         boolean resolviendo = true;
         int cont = 0, errores = 0;
+
+        if(formulas.isEmpty())
+            resolviendo = false;
         
         while(resolviendo){
-            int valor = resolverFormula(formulas.get(cont).getFormula());;
+            int valor = resolverFormula(formulas.get(cont).getFormula());
              
             if(valor == Integer.MIN_VALUE){
                 cont++;
